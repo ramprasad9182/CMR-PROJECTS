@@ -1,0 +1,9 @@
+<odoo>
+     <data>
+        <!-- Custom Group: Public Analytic Access -->
+        <record id="group_public_analytic_access" model="res.groups">
+            <field name="name">Custom Public User</field>
+<!--            <field name="category_id" ref="base.module_category_accounting"/>-->
+        </record>
+    </data>
+</odoo>
