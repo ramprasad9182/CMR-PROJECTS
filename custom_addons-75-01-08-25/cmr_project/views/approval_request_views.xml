@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="approval_reques_view_tree_product_domain_test" model="ir.ui.view">
+        <field name="name">approval.reques.view.tree.domain</field>
+        <field name="model">approval.request</field>
+        <field name="inherit_id" ref="approvals.approval_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='products']/field[@name='product_line_ids']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="nhcl_project_id" readonly="request_status != 'new'"
+                       options="{'no_create': True, 'no_open': True, 'no_edit':True}" required="1"/>
+                <field name="nhcl_account_approval_id"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}" readonly="request_status != 'new'"/>
+                <field name="nhcl_purchase_approval_type"
+                       domain="[('project_ids.account_id','=', nhcl_account_approval_id)]"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}" readonly="request_status != 'new'"/>
+                <!--                ###################################################################################-->
+                <field name="vendor_id" options="{'no_open': True, 'no_create': True}"
+                       invisible="can_edit_vendor == False" readonly="request_status == 'approved'"/>
+                <field name="street" readonly="1" invisible="can_edit_vendor == False"/>
+                <field name="street2" readonly="1" invisible="can_edit_vendor == False"/>
+                <field name="city" readonly="1" invisible="can_edit_vendor == False"/>
+                <field name="state_id" readonly="1" invisible="can_edit_vendor == False"/>
+                <field name="zip" readonly="1" invisible="can_edit_vendor == False"/>
+                <field name="country_id" readonly="1" invisible="can_edit_vendor == False"/>
+                <field name="gst_no" readonly="1" invisible="can_edit_vendor == False"/>
+                <field name="fiscal_position_id" readonly="1" invisible="can_edit_vendor == False" force_save="1"
+                       options="{'no_create': True, 'no_open': True, 'no_edit':True}"/>
+                <!--                ###########################################################################################-->
+            </xpath>
+            <xpath expr="//page[@name='products']/field[@name='product_line_ids']" position="after">
+              <group class="oe_subtotal_footer" invisible="can_edit_vendor == False">
+                  <field name="tax_totals" widget="account-tax-totals-field" nolabel="1" readonly="1" invisible="can_edit_vendor == False"/>
+              </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
