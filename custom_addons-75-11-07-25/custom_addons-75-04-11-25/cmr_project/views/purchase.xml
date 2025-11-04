@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="cmr_project_purchase_order" model="ir.ui.view">
+        <field name="name">purchase.order.view.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='purchase_delivery_invoice']/group/group/field[@name='payment_term_id']"
+                   position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+<!--        #######################################################################-->
+                <field name="street" readonly="1"/>
+                <field name="street2" readonly="1"/>
+                <field name="city" readonly="1"/>
+                <field name="state_id" readonly="1"/>
+                <field name="zip" readonly="1"/>
+                <field name="country_id" readonly="1"/>
+<!--        ###########################################################################-->
+                <field name="nhcl_account_id" readonly="state not in ['draft','sent'] "
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                <field name="nhcl_purchase_type" readonly="state not in ['draft','sent']"
+                       domain="[('project_ids.account_id','=', nhcl_account_id)]"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_id']"
+                   position="before">
+                <field name="nhcl_task_id"
+                       domain="[('project_id.account_id','=', parent.nhcl_account_id),('stage_id','=', parent.nhcl_purchase_type),('parent_id','=', False)]"
+                       readonly="parent.state not in ['draft','sent']"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                <field name="nhcl_sub_task_id" domain="[('parent_id','=', nhcl_task_id)]"
+                       readonly="parent.state not in ['draft','sent']"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                <field name="nhcl_account_line_id" column_invisible="1" readonly="parent.state not in ['draft','sent']"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                <field name="nhcl_dummy_product_id" options="{'no_edit': True, 'no_create': True, 'no_open': True}"
+                       widget="many2many_tags" column_invisible="1"/>
+            </xpath>
+            <!--            <xpath expr="//field[@name='order_line']/form//field[@name='product_uom']" position="attributes">-->
+            <!--                <attribute name="domain">[('category_id', '=', product_id.uom_id.category_id)]</attribute>-->
+            <!--            </xpath>-->
+            <xpath expr="//notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_id']"
+                   position="attributes">
+                <attribute name="options">{'no_edit': True, 'no_create': True, 'no_open': True}</attribute>
+                <attribute name="domain">[('id','in',nhcl_dummy_product_id)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_qty']" position="after">
+                <field name="purchase_many" widget="many2many_tags"/>
+            </xpath>
+
+        </field>
+    </record>
+
+<!--    <record id="cmr_project_approval_product_line_view_tree_product_domain" model="ir.ui.view">-->
+<!--        <field name="name">approval.product.line.view.tree.domain</field>-->
+<!--        <field name="model">approval.product.line</field>-->
+<!--        <field name="inherit_id" ref="approvals.approval_product_line_view_tree"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='quantity']" position="after">-->
+<!--                <field name="estimate_value" />-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+     <!-- Tree View -->
+    <record id="view_purchase_order_line_tree_all" model="ir.ui.view">
+        <field name="name">purchase.order.line.tree.all</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="order_id" string="PO No"/>
+                <field name="po_date_order" string="PO Date"/>
+                <field name="partner_id" string="Vendor"/>
+                <field name="product_id" string="Product"/>
+                <field name="product_qty" string="PO Qty"/>
+                <field name="price_unit" string="PO Value"/>
+                <field name="qty_received" string="GRC Qty"/>
+                <field name="receive_bill_price_subtotal"/>
+                <field name="qty_invoiced" string="Bill Qty"/>
+                <field name="bill_price_subtotal"/>
+                <field name="state"/>
+                <field name="po_payment_status" string="Payment Status"/>
+
+            </list>
+        </field>
+    </record>
+
+    <!-- Action to Open PO Lines -->
+    <record id="action_purchase_order_line_all" model="ir.actions.act_window">
+        <field name="name">GRC Report</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_purchase_order_line_tree_all"/>
+        <field name="domain">[('order_id.state', '!=', 'cancel')]</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_purchase_order_line_all"
+              name="GRC Report"
+              parent="purchase.purchase_report_main"
+              sequence="99"
+              groups="purchase.group_purchase_manager"
+              action="action_purchase_order_line_all"/>
+
+
+</odoo>

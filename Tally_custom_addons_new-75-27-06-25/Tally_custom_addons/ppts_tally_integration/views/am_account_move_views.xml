@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_tally_integration" model="ir.ui.view">
+        <field name="name">account.move.form.tally.integration</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='other_info']" position="after">
+                <page string="Tally Details" groups="ppts_tally_integration.group_user">
+                    <group>
+                        <group string="Customer Bill Details"
+                               invisible="move_type != 'in_invoice'">
+                            <field name="tally_bill_id" readonly="1"/>
+                            <field name="tally_bill_name" readonly="1"/>
+                            <field name="tally_po_id" readonly="1"/>
+                        </group>
+                        <group string="Customer Invoice Details"
+                               invisible="move_type != 'out_invoice'">
+                            <field name="tally_invoice_id" readonly="1"/>
+                            <field name="tally_invoice_name" readonly="1"/>
+                            <field name="tally_so_id" readonly="1"/>
+                        </group>
+                        <group string="Journal Entries"
+                               invisible="move_type != 'entry'">
+                            <field name="tally_journal_id" readonly="1"/>
+                            <field name="tally_journal_name" readonly="1"/>
+                        </group>
+                        <group string="Debit"
+                               invisible="move_type != 'in_refund'">
+                            <field name="tally_debit_id" readonly="1"/>
+                            <field name="tally_debit_name" readonly="1"/>
+                        </group>
+                        <group string="Credit"
+                               invisible="move_type != 'out_refund'">
+                            <field name="tally_credit_id" readonly="1"/>
+                            <field name="tally_credit_name" readonly="1"/>
+                        </group>
+                        <group string="Odoo-Tally" groups="ppts_tally_integration.group_manager">
+                            <field name="tally_flag" readonly="1"/>
+                            <field name="ndw_select" readonly="1"/>
+                                                                         <field name ='narrate' string="Tally Narration" placeholder="Enter the Narration"/>
+
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_account_move_search_tally" model="ir.ui.view">
+        <field name="name">account.move.search_tally</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_move_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='misc_filter']" position="after">
+                <separator/>
+                <filter string="Sync Done" name="tally_flag_done" domain="[('tally_flag','=', True)]"/>
+                <filter string="Yet to Sync" name="tally_flag_not_done" domain="[('tally_flag','!=', True)]"/>
+                <filter string="Tally Bill ID" name="tally_bill_id" domain="[('tally_bill_id','>', 0)]"/>
+                <filter string="Tally Credit ID" name="tally_credit_id" domain="[('tally_credit_id','>', 0)]"/>
+                <filter string="Tally Debit ID" name="tally_debit_id" domain="[('tally_debit_id','>', 0)]"/>
+                <filter string="Tally Journal ID" name="tally_journal_id" domain="[('tally_journal_id','>', 0)]"/>
+                <filter string="Tally Invoice ID" name="tally_invoice_id" domain="[('tally_invoice_id','>', 0)]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

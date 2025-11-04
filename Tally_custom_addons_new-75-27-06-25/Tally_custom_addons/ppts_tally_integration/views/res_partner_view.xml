@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_inherit_new" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+<!--                    <button name="action_sync_partner" string="Sync to Tally" class="oe_highlight" type="object"-->
+<!--                            invisible="1"/>-->
+                </header>
+            </xpath>
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Tally Details" groups="ppts_tally_integration.group_user">
+                    <group>
+                        <group string="Tally - Odoo">
+                            <field name="tally_id" readonly="1"/>
+                            <field name="type_partner"/>
+                            <field name="pan_no"/>
+                            <field name="from_date"/>
+                        </group>
+                        <group string="Odoo - Tally" groups="ppts_tally_integration.group_manager">
+                            <field name="tally_flag" readonly="1"/>
+                            <field name="ndw_select" readonly="1" force_save="1"/>
+                             <field name="name" position="after"/>
+                             <field name="old_name" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+     <record id="view_partner_search_tally" model="ir.ui.view">
+        <field name="name">partner.search_tally</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='inactive']" position="after">
+                <separator/>
+                <filter string="Tally ID" name="tally_id" domain="[('tally_id','>', 0)]"/>
+                <filter string="Sync Done" name="tally_flag_done" domain="[('tally_flag','=', True)]"/>
+                <filter string="Yet to Sync" name="tally_flag_not_done" domain="[('tally_flag','!=', True)]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+
+
+<!--    <record id="product_category_inherit" model="ir.ui.view">-->
+<!--        <field name="name">product.category.view.form.inherit</field>-->
+<!--        <field name="model">product.category</field>-->
+<!--        <field name="inherit_id" ref="product.product_category_form_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='parent_id']" position="after">-->
+
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>

@@ -1,0 +1,24 @@
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<odoo>-->
+<!--    <record id="view_sale_order_tally" model="ir.ui.view">-->
+<!--        <field name="name">sale.order.form.ppts.tally</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="inherit_id" ref="sale.view_order_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//page[@name='customer_signature']" position="after">-->
+<!--                <page string="Tally Details" groups="ppts_tally_integration.group_user">-->
+<!--                    <group>-->
+<!--                        <group string="Tally - Odoo">-->
+<!--                            <field name="tally_so_id" readonly="1"/>-->
+<!--                            <field name="tally_so_name" readonly="1"/>-->
+<!--                        </group>-->
+<!--                        <group string="Odoo - Tally" groups="ppts_tally_integration.group_manager">-->
+<!--                            <field name="ndw_select" readonly="1"/>-->
+<!--                            <field name="tally_flag" readonly="1"/>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                </page>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+<!--</odoo>-->

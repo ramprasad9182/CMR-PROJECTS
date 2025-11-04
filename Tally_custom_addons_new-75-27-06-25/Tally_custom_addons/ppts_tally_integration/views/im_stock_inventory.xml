@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_stock_uom_form_inherit_tally" model="ir.ui.view">
+            <field name="name">stock.uom.inherit.tally</field>
+            <field name="model">uom.category</field>
+            <field name="inherit_id" ref="uom.product_uom_categ_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='uom_lines']" position="after">
+                    <page string="Tally Details" groups="ppts_tally_integration.group_user">
+                        <group>
+                            <group string="Tally - Odoo">
+                                <field name="tally_id" readonly="1"/>
+                            </group>
+                            <group string="Odoo - Tally" groups="ppts_tally_integration.group_manager">
+<!--                                <field name="tally_flag" readonly="1"/>-->
+                                <field name="ndw_select" readonly="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button name="action_odoo_tally_uom_sync" string="Sync to Tally" class="oe_highlight"
+                                type="object"/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_group_form_inherit_tally" model="ir.ui.view">
+            <field name="name">stock.group.inherit.tally</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <notebook>
+                        <page string="Tally Details" groups="ppts_tally_integration.group_user">
+                            <group>
+                                <group string="Tally - Odoo">
+                                    <field name="tally_id" readonly="1"/>
+                                </group>
+                                <group string="Odoo - Tally" groups="ppts_tally_integration.group_manager">
+                                    <field name="tally_flag" readonly="1"/>
+                                    <field name="ndw_select" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </xpath>
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button name="action_odoo_tally_stock_categ_sync" string="Sync to Tally" class="oe_highlight"
+                                type="object"/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_items_form_inherit_tally" model="ir.ui.view">
+            <field name="name">stock.items.inherit.tally</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='general_information']" position="after">
+                    <page string="Tally Details" groups="ppts_tally_integration.group_user">
+                        <group>
+                            <group string="Tally - Odoo">
+                                <field name="tally_id" readonly="1"/>
+                            </group>
+                            <group string="Odoo - Tally" groups="ppts_tally_integration.group_manager">
+                                <field name="tally_flag" readonly="1"/>
+                                <field name="ndw_select" readonly="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button name="action_odoo_tally_product_sync" string="Sync to Tally" class="oe_highlight"
+                                type="object"/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_category_form_inherit_tally" model="ir.ui.view">
+            <field name="name">stock.category.inherit.tally</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='general_information']" position="after">
+                    <page string="Tally Details" groups="ppts_tally_integration.group_user">
+                        <group>
+                            <group string="Tally - Odoo">
+                                <field name="tally_id" readonly="1"/>
+                            </group>
+                            <group string="Odoo - Tally" groups="ppts_tally_integration.group_manager">
+                                <field name="tally_flag" readonly="1"/>
+                                <field name="ndw_select" readonly="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button name="action_product_category" string="Sync to Tally" class="oe_highlight"
+                                type="object"/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

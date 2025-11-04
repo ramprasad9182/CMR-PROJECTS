@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="nhcl_approval_product_line_view_tree" model="ir.ui.view">
+        <field name="name">approval.product.line.view.tree</field>
+        <field name="model">approval.product.line</field>
+        <field name="inherit_id" ref="approvals.approval_product_line_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="before">
+                <field name="nhcl_task_approval_id"
+                       domain="[('project_id.account_id', '=', parent.nhcl_account_approval_id),
+                           ('stage_id', '=', parent.nhcl_purchase_approval_type),
+                           ('parent_id', '=', False)]"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}" readonly="parent.request_status != 'new'"/>
+
+                <field name="nhcl_sub_task_approval_id"
+                       domain="[('parent_id', '=', nhcl_task_approval_id)]"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}" readonly="parent.request_status != 'new'"/>
+
+                <field name="nhcl_dummy_product_approval_id"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"
+                       widget="many2many_tags" column_invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_edit': True, 'no_create': True, 'no_open': True}</attribute>
+                <attribute name="domain">[('id','in',nhcl_dummy_product_approval_id)]</attribute>
+                <attribute name="readonly">parent.request_status != 'new'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="attributes">
+                <attribute name="readonly">parent.request_status != 'new'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='quantity']" position="attributes">
+                <attribute name="readonly">parent.request_status != 'new'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='quantity']" position="after">
+                <field name="estimate_value" />
+            </xpath>
+            <xpath expr="//field[@name='product_uom_id']" position="attributes">
+                <attribute name="readonly">parent.request_status != 'new'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="nhcl_analytic_account_id" readonly="parent.request_status != 'new'"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+<!--                <field name="analytic" widget="analytic_distribution"/>-->
+            </xpath>
+            <xpath expr="//field[@name='quantity']" position="after">
+                <field name="unit_price" column_invisible="parent.can_edit_vendor == False"
+                       readonly="parent.request_status == 'approved'"/>
+                <field name="taxes_id" widget="many2many_tags" column_invisible="parent.can_edit_vendor == False" readonly="parent.request_status == 'approved'"/>
+                <field name="price_tax" column_invisible="parent.can_edit_vendor == False" readonly="parent.request_status != 'new'"/>
+                <field name="price_subtotal" column_invisible="parent.can_edit_vendor == False" readonly="parent.request_status != 'new'"/>
+                <field name="price_total" column_invisible="parent.can_edit_vendor == False" readonly="parent.request_status != 'new'"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!--    ########################################################################-->
+    <record id="nhcl_hide_seller_id" model="ir.ui.view">
+        <field name="name">hide.seller.id.in.approval.product.line</field>
+        <field name="model">approval.product.line</field>
+        <field name="inherit_id" ref="approvals_purchase.approval_purchase_product_line_view_tree_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='seller_id']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <!--################################################################################-->
+
+</odoo>

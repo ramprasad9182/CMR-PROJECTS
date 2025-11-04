@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_purchase_form_ppts_tally" model="ir.ui.view">
+        <field name="name">purchase.order.form.ppts.tally</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='purchase_delivery_invoice']" position="after">
+                <page string="Tally Details" groups="ppts_tally_integration.group_user">
+                    <group>
+                        <group string="Tally - Odoo">
+                            <field name="tally_po_id" readonly="1"/>
+                            <field name="tally_po_name" readonly="1"/>
+                        </group>
+                        <group string="Odoo - Tally" groups="ppts_tally_integration.group_manager">
+<!--                            <field name="tally_flag"/>-->
+                            <field name="ndw_select" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mysqldb_config_form" model="ir.ui.view">
+        <field name="name">mysqldb.config.form</field>
+        <field name="model">mysqldb.config</field>
+        <field name="arch" type="xml">
+            <form string="ModelTitle">
+                <sheet>
+                    <group>
+                        <group string="Tally Connection Info">
+                            <field name="db_hostname"/>
+                            <field name="company_name"/>
+                            <field name="db_sync_type" readonly="1"/>
+<!--                            <field name="db_OdooCmpName" readonly="0"/>-->
+                        </group>
+                    </group>
+                    <tr>
+                        <button name="run_testquery" string="Test Connection" type="object" class="oe_highlight"/>
+                    </tr>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="mysqldb_list_view" model="ir.ui.view">
+        <field name="name">mysqldb.config.ModelName.list</field>
+        <field name="model">mysqldb.config</field>
+        <field name="arch" type="xml">
+            <list string="ModelTitle">
+                <field name="db_hostname"/>
+                <field name="company_name"/>
+                <field name="db_sync_type" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mysqldbconfig_act_window" model="ir.actions.act_window">
+        <field name="name">Tally Server Configuration</field>
+        <field name="res_model">mysqldb.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="mysqldb_list_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                There is no examples, click here to add new Record.
+            </p>
+        </field>
+    </record>
+
+    <menuitem name="Connectivity" id="mysqldbconfig_menu" parent="ppts_tally_integration.menu_ppts_tally"
+              action="ppts_tally_integration.mysqldbconfig_act_window" groups="ppts_tally_integration.group_manager"/>
+    <menuitem name="Tally Integration Settings" id="tally_odoo_setup"
+              action="ppts_tally_integration.tally_integration_action"
+              groups="ppts_tally_integration.group_manager" parent="ppts_tally_integration.mysqldbconfig_menu"/>
+    <menuitem name="Tally Server Configuration" id="odoo_tally_setup"
+              action="ppts_tally_integration.mysqldbconfig_act_window"
+              groups="ppts_tally_integration.group_manager" parent="mysqldbconfig_menu"/>
+</odoo>

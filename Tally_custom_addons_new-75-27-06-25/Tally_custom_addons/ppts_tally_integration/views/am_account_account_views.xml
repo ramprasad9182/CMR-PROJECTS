@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_form_ppts_tally" model="ir.ui.view">
+        <field name="name">account.account.form.ppts.tally</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='accounting']" position="after">
+                <page string="Tally Details" groups="ppts_tally_integration.group_user">
+                    <group>
+                        <group string="Tally - Odoo">
+                            <field name="tally_id" readonly="1"/>
+                            <field name="tally_group_id" readonly="1"/>
+                        </group>
+                        <group string="Odoo - Tally" groups="ppts_tally_integration.group_manager">
+                            <field name="tally_flag" readonly="1"/>
+                            <field name="ndw_select" readonly="1" force_save="1"/>
+                             <field name="name" position="after"/>
+                             <field name="old_name" readonly="1"/>
+                        </group>
+                        <group string="Tax Info">
+                            <field name="is_tax"/>
+                            <field name="types_tax"
+                                   invisible="'is_tax', '=', False"
+                                   required="'is_tax', '=', True"/>
+                            <field name="types_gst"
+                                   invisible="'is_tax', '=', False or 'types_tax', '!=', 'gst'"
+                                   required="'types_tax', '=', 'gst'"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <field name="group_id" position="attributes">
+                <attribute name="readonly">False</attribute>
+                <attribute name="force_save">1</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_account_search_tally" model="ir.ui.view">
+        <field name="name">account.account.search_tally</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='activeacc']" position="after">
+                <separator/>
+                <filter string="Tally ID" name="tally_id" domain="[('tally_id','>', 0)]"/>
+                <filter string="Sync Done" name="tally_flag_done" domain="[('tally_flag','=', True)]"/>
+                <filter string="Yet to Sync" name="tally_flag_not_done" domain="[('tally_flag','!=', True)]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+

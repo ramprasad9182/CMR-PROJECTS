@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ppts_tally_integration_log_from_view" model="ir.ui.view">
+        <field name="name">ppts.tally.integration.log.form</field>
+        <field name="model">ppts.tally.integration.log</field>
+        <field name="arch" type="xml">
+            <form string="Odoo Sync Log">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                        <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="show_logs_detailed_list"
+                                icon="fa-align-left"  invisible="total_count == 0">
+                            <field string="Total Records" name="total_count" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="log_count_fail"
+                                icon="fa-pencil-square-o"
+                                invisible="fail_count == 0">
+                            <field string="Failure" name="fail_count" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="log_count_done"
+                                icon="fa-check"
+                                invisible="done_count == 0">
+                            <field string="Done" name="done_count" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="show_created_records"
+                                string="Created Records"
+                                invisible="done_count == 0 or data_from == 'odoo'"
+                                icon="fa-folder-open">
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <h1 class="mt0">
+                                <field name="name" placeholder="TOL/00001" readonly="1"/>
+                            </h1>
+                        </group>
+                        <group>
+                            <field name="sync_config_id" readonly="1"/>
+                            <field name="created_date" readonly="1"/>
+                            <field name="company_id"/>
+                            <field name="data_from" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="sync_start_date" required="1" readonly="1"/>
+                            <field name="sync_end_date" required="1" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Masters" name="masters_log">
+                            <field name="master_log_line_ids"
+                                   options="{'no_create': True, 'no_open': True, 'delete':False}">
+                                <list string="Masters" decoration-danger="sync_status=='fail'"
+                                      decoration-success=" sync_status == 'done'">
+                                    <field name="name"/>
+                                    <field name="company_id" optional="hide"/>
+                                    <field name="sync_action"/>
+                                    <field name="master_type"/>
+                                    <field name="date_time"/>
+                                    <field name="sync_data"/>
+                                    <field name="error_data"/>
+                                    <field name="sync_status"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Transactions" name="transactions_log">
+
+                            <field name="trans_log_line_ids"
+                                   options="{'no_create': True, 'no_open': True, 'delete':False}">
+                                <list string="Masters" decoration-danger="sync_status=='fail'"
+                                      decoration-success="sync_status=='done'">
+                                    <field name="sync_log_id" optional="hide"/>
+                                    <field name="company_id" optional="hide"/>
+                                    <field name="name"/>
+                                    <field name="sync_action"/>
+                                    <field name="master_type"/>
+                                    <field name="date_time"/>
+                                    <field name="sync_data"/>
+                                    <field name="error_data"/>
+                                    <field name="sync_status"/>
+                                    <button name="create_record_from_log" type="object" string="Create Order"
+                                            class="oe_highlight"
+                                            invisible="sync_status == 'done'"/>
+                                </list>
+                            </field>
+                        </page>
+
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- list View -->
+    <record id="ppts_tally_integration_sync_master_log_list" model="ir.ui.view">
+        <field name="name">sync.master.data.log.lists</field>
+        <field name="model">sync.master.data.log</field>
+        <field name="arch" type="xml">
+            <list string="Tally list" default_order='date_time'>
+                <field name="sync_log_id"/>
+                <field name="company_id" optional="hide"/>
+                <!--                <field name="tally_boa_id" optional="show"/>-->
+                <field name="name"/>
+                <field name="sync_action"/>
+                <field name="master_type"/>
+                <field name="date_time"/>
+                <field name="sync_data"/>
+                <field name="error_data"/>
+                <field name="sync_status"/>
+                <field name="tally_record_name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+
+    <record id="master_log_line_search" model="ir.ui.view">
+        <field name="name">sync.master.data.log.search</field>
+        <field name="model">sync.master.data.log</field>
+        <field name="arch" type="xml">
+            <search string="Log">
+                <field name="name"/>
+                <field name="sync_log_id"/>
+                <field name="sync_action"/>
+                <field name="master_type"/>
+                <field name="date_time"/>
+                <field name="sync_data"/>
+                <field name="error_data"/>
+                <field name="sync_status"/>
+
+                <filter name="sync_status_done" string="Completed" domain="[('sync_status', '=', 'done')]"/>
+                <filter name="sync_status_fail" string="Failed" domain="[('sync_status', '=', 'fail')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Sync ID" name="groupby_sync_log_id" domain="[]"
+                            context="{'group_by': 'sync_log_id'}"/>
+                    <filter string="Action" name="groupby_sync_action" domain="[]"
+                            context="{'group_by': 'sync_action'}"/>
+                    <filter string="Type" name="groupby_master_type" domain="[]" context="{'group_by': 'master_type'}"/>
+                    <filter string="Date" name="groupby_date_time" domain="[]" context="{'group_by': 'date_time'}"/>
+                    <filter string="Status" name="groupby_sync_status" domain="[]"
+                            context="{'group_by': 'sync_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- list View -->
+    <record id="ppts_tally_integration_log_list" model="ir.ui.view">
+        <field name="name">ppts.tally.integration.log.lists</field>
+        <field name="model">ppts.tally.integration.log</field>
+        <field name="arch" type="xml">
+            <list string="Tally list" default_order='id desc'>
+                <field name="name"/>
+                <field name="created_date"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="tally_integration_log_action" model="ir.actions.act_window">
+        <field name="name">Tally Integration Log</field>
+        <field name="res_model">ppts.tally.integration.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'create': False}</field>
+        <field name="view_id" ref="ppts_tally_integration_log.ppts_tally_integration_log_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tally Integration Log
+            </p>
+            <p>
+                Tally Integration with Odoo 15 powered by PPTS India Pvt. Ltd.
+            </p>
+        </field>
+    </record>
+
+    <!-- log line items list View -->
+    <record id="tally_integration_log_line_action" model="ir.actions.act_window">
+        <field name="name">Tally Integration Log Lines</field>
+        <field name="res_model">sync.master.data.log</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'create': False}</field>
+        <field name="view_id" ref="ppts_tally_integration_log.ppts_tally_integration_sync_master_log_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tally Integration Log
+            </p>
+            <p>
+                Tally Integration with Odoo 15 powered by PPTS India Pvt. Ltd.
+            </p>
+        </field>
+    </record>
+
+    <menuitem name="Tally Sync Log"
+              id="menu_ppts_tally_log_menu"
+              sequence="47"
+              parent="ppts_tally_integration.menu_ppts_tally"
+              groups="base.group_no_one"/>
+
+
+    <menuitem name="Log Files"
+              id="menu_ppts_tally_log"
+              sequence="45"
+              parent="ppts_tally_integration_log.menu_ppts_tally_log_menu"
+              action="ppts_tally_integration_log.tally_integration_log_action"/>
+
+    <!--    <menuitem name="Sync Log Lines"-->
+    <!--    id="menu_ppts_tally_log_lines"-->
+    <!--    sequence="46"-->
+    <!--    parent="ppts_tally_integration_log.menu_ppts_tally_log_menu"-->
+    <!--    action="ppts_tally_integration_log.tally_integration_log_line_action"/>-->
+
+    <!--Tally Entries-->
+    <record id="tally_entries_view_form" model="ir.ui.view">
+        <field name="name">tally.entries.form</field>
+        <field name="model">tally.entries</field>
+        <field name="arch" type="xml">
+            <form string="Tally Entries" create="false" edit="false" delete="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="received_date"/>
+                            <field name="tally_entry_type"/>
+                        </group>
+                        <group>
+                            <field name="number_of_entries"/>
+                        </group>
+                    </group>
+                    <separator string="Tally Entries"/>
+                    <field name="tally_data" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- list View -->
+    <record id="tally_entries_view_list" model="ir.ui.view">
+        <field name="name">tally.entries.list</field>
+        <field name="model">tally.entries</field>
+        <field name="arch" type="xml">
+            <list string="Tally Entries" create="false" edit="false" delete="false">
+                <field name="received_date"/>
+                <field name="tally_entry_type"/>
+                <field name="number_of_entries"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="tally_entries_view_action" model="ir.actions.act_window">
+        <field name="name">Tally Entries</field>
+        <field name="res_model">tally.entries</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="ppts_tally_integration_log.tally_entries_view_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tally Entries before creating record in Odoo.
+            </p>
+        </field>
+    </record>
+
+    <menuitem name="Tally Entries"
+              id="tally_entries_menu_action"
+              sequence="3"
+              parent="ppts_tally_integration_log.menu_ppts_tally_log_menu"
+              action="ppts_tally_integration_log.tally_entries_view_action"/>
+
+    <!--Odoo Entries-->
+    <record id="Odoo_entries_view_form" model="ir.ui.view">
+        <field name="name">odoo.entries.form</field>
+        <field name="model">odoo.entries</field>
+        <field name="arch" type="xml">
+            <form string="Odoo Entries" create="false" edit="false" delete="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="synchronize_date"/>
+                            <field name="odoo_entry_type"/>
+                        </group>
+                        <group>
+                            <field name="number_of_odoo_entries"/>
+                        </group>
+                    </group>
+                    <separator string="Odoo Entries"/>
+                    <field name="odoo_data" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- list View -->
+    <record id="odoo_entries_view_list" model="ir.ui.view">
+        <field name="name">odoo.entries.list</field>
+        <field name="model">odoo.entries</field>
+        <field name="arch" type="xml">
+            <list string="Odoo Entries" create="false" edit="false" delete="false">
+                <field name="synchronize_date"/>
+                <field name="odoo_entry_type"/>
+                <field name="number_of_odoo_entries"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="odoo_entries_view_action" model="ir.actions.act_window">
+        <field name="name">Odoo Entries</field>
+        <field name="res_model">odoo.entries</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="ppts_tally_integration_log.odoo_entries_view_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Odoo Entries before creating record in Tally.
+            </p>
+        </field>
+    </record>
+
+    <menuitem name="Odoo Entries"
+              id="odoo_entries_menu_action"
+              sequence="4"
+              parent="ppts_tally_integration_log.menu_ppts_tally_log_menu"
+              action="ppts_tally_integration_log.odoo_entries_view_action"/>
+</odoo>

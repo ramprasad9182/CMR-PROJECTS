@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_group_search_tally" model="ir.ui.view">
+        <field name="name">account.group.search.inherit.tally</field>
+        <field name="model">account.group</field>
+        <field name="inherit_id" ref="account.view_account_group_search"/>
+        <field name="arch" type="xml">
+            <search string="Account groups">
+                <group string="Group By" name="groupby_partner_categ">
+                    <filter string="Parent Group" name="groupby_partner_categ"
+                            context="{'group_by': 'parent_group_id'}"/>
+                </group>
+                <filter string="Tally ID" name="tally_id" domain="[('tally_id','>', 0)]"/>
+                <filter string="Sync Done" name="tally_flag_done" domain="[('tally_flag','=', True)]"/>
+                <filter string="Yet to Sync" name="tally_flag_not_done" domain="[('tally_flag','!=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_account_group_form_inherit_tally" model="ir.ui.view">
+        <field name="name">account.group.form.inherit.tally</field>
+        <field name="model">account.group</field>
+        <field name="inherit_id" ref="account.view_account_group_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Tally Details" groups="ppts_tally_integration.group_user">
+                        <group>
+                            <group string="Tally - Odoo">
+                                <field name="tally_id" readonly="1"/>
+                            </group>
+                            <group string="Odoo - Tally" groups="ppts_tally_integration.group_manager">
+                                <field name="tally_flag" readonly="1"/>
+                                <field name="ndw_select" readonly="1" force_save="1"/>
+                                 <field name="name" position="after"/>
+                                <field name="old_name" readonly="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                 <field name="parent_id" readonly="0"/>
+                 <field name="company_id" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

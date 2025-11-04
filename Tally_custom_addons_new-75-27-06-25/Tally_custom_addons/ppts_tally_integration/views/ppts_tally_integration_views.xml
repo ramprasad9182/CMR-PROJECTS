@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ppts_tally_integration_from_view" model="ir.ui.view">
+        <field name="name">ppts.tally.integration.form</field>
+        <field name="model">ppts.tally.integration</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="created_by" readonly="1"/>
+                            <field name="enable_auto_sync" invisible="1"/>
+                            <field name="sync_start_date"/>
+                            <field name="company_id"/>
+                            <field name="tally_company"/>
+                        </group>
+                        <group>
+                            <field name="created_date" readonly="1"/>
+                            <field name="sync_end_date"/>
+                            <field name="is_active" required="1"/>
+                        </group>
+                        <tr>
+                            <button type="object" name="tally_sync_all" class="oe_highlight" string="Sync All"
+                                    help="Automated the data sync from odoo to tally"
+                                    groups="ppts_tally_integration.group_manager"/>
+                        </tr>
+                    </group>
+                    <notebook>
+                        <page name="tally_sync" invisible="0" string="Tally Sync Details"
+                              groups="ppts_tally_integration.group_manager">
+                            <table style='width:110%;'>
+                                <tr style="padding-top: 2px; background-color: #F1F1F1;">
+                                    <th style='width:20%; font-weight:bold'>Type</th>
+                                    <th style='width:20%; font-weight:bold'></th>
+                                    <th style='width:25%; font-weight:bold;text-align: left;'>Creation At</th>
+                                    <th style='width:10%; text-align: center;font-weight:bold'>Manual</th>
+                                    <th style='width:10%; font-weight:bold' groups="base.group_no_one" invisible="1">
+                                        Reset
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                </tr>
+                                <tr style="padding-top: 2px; background-color: #F1F1F1;">
+                                    <th style='width:20%; font-weight:bold'>Accounting Masters</th>
+                                    <th style='width:20%; font-weight:bold;text-align: right;'></th>
+                                    <th style='width:25%; font-weight:bold;text-align: left;'></th>
+                                    <th style='width:25%; font-weight:bold'></th>
+                                </tr>
+
+                                <tr>
+                                    <span>Account Groups</span>
+                                    <td>
+                                        <field name="is_account_group"/>
+                                    </td>
+                                    <td>
+                                        <field name="account_group_new"
+                                               invisible="is_account_group == False"
+                                               required="is_account_group == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_res_account_group_sync"
+                                                string="Sync"
+                                                invisible="is_account_group == False or account_group_new != 'odoo'"
+                                                help="Manually sync Account Group"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>Partners</span>
+                                    <td>
+                                        <field name="res_partner_flag"/>
+                                    </td>
+                                    <td>
+                                        <field name="res_partner_new_mem"
+                                               invisible="res_partner_flag == False"
+                                               required="res_partner_flag == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_res_partner_sync"
+                                                string="Sync"
+                                                invisible="res_partner_flag == False or res_partner_new_mem != 'odoo'"
+                                                help="Manually sync Partners"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>COA</span>
+                                    <td>
+                                        <field name="res_coa"/>
+                                    </td>
+                                    <td>
+                                        <field name="res_coa_new"
+                                               invisible="res_coa == False"
+                                               required="res_coa == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_res_coa_sync"
+                                                string="Sync"
+                                                invisible="res_coa == False or res_coa_new != 'odoo'"
+                                                help="Manually sync COA"/>
+                                    </td>
+                                </tr>
+
+                                <tr style="padding-top: 2px; background-color: #F1F1F1;">
+                                    <th style='width:20%; font-weight:bold'>Inventory Masters</th>
+                                    <th style='width:20%; font-weight:bold;text-align: right;'></th>
+                                    <th style='width:25%; font-weight:bold;text-align: left;'></th>
+                                    <th style='width:25%; font-weight:bold'></th>
+                                </tr>
+                                <tr>
+                                    <span>Product UOM</span>
+                                    <td>
+                                        <field name="products_uom"/>
+                                    </td>
+                                    <td>
+                                        <field name="products_uom_new"
+                                               invisible="products_uom == False"
+                                               required="products_uom == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_stock_uom"
+                                                string="Sync"
+                                                invisible="products_uom == False or products_uom_new != 'odoo'"
+                                                help="Manually sync Stock-UOM"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>Product Group</span>
+                                    <td>
+                                        <field name="products_group"/>
+                                    </td>
+                                    <td>
+                                        <field name="products_group_new"
+                                               invisible="products_group == False"
+                                               required="products_group == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_products_group_sync"
+                                                string="Sync"
+                                                invisible="products_group == False or products_group_new != 'odoo'"
+                                                help="Manually sync Stock-UOM"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>Product Items</span>
+                                    <td>
+                                        <field name="products_category"/>
+                                    </td>
+                                    <td>
+                                        <field name="products_category_new"
+                                               invisible="products_category == False"
+                                               required="products_category ==True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_product_category_sync"
+                                                string="Sync"
+                                                invisible="products_category == False or products_category_new != 'odoo'"
+                                                help="Manually sync Product Category"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                                <tr style="padding-top: 2px; background-color: #F1F1F1;">
+                                    <th style='width:20%; font-weight:bold'>Procurement</th>
+                                    <th style='width:20%; font-weight:bold;text-align: right;'></th>
+                                    <th style='width:25%; font-weight:bold;text-align: left;'></th>
+                                    <th style='width:25%; font-weight:bold'></th>
+                                </tr>
+                                <tr>
+                                    <span>Purchase Order</span>
+                                    <td>
+                                        <field name="is_purchase"/>
+                                    </td>
+                                    <td>
+                                        <field name="purchase_order_new"
+                                               invisible="is_purchase == False"
+                                               required="is_purchase == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_purchase_order"
+                                                string="Sync"
+                                                invisible="is_purchase == False or purchase_order_new != 'odoo'"
+                                                help="Manually sync Purchase order"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>Receipt Note</span>
+                                    <td>
+                                        <field name="is_receipt"/>
+                                    </td>
+                                    <td>
+                                        <field name="receipt_note_new"
+                                               invisible="is_receipt == False"
+                                               required="is_receipt == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_res_receipt_note_sync"
+                                                string="Sync"
+                                                invisible="is_receipt == False or receipt_note_new !='odoo'"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>Purchase Bill</span>
+                                    <td>
+                                        <field name="bills"/>
+                                    </td>
+                                    <td>
+                                        <field name="bills_new"
+                                               invisible="bills == False"
+                                               required="bills == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_bills_sync"
+                                                string="Sync"
+                                                invisible="bills == False or bills_new != 'odoo'"
+                                                help="Manually sync bills"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>Debit Note</span>
+                                    <td>
+                                        <field name="is_debit"/>
+                                    </td>
+                                    <td>
+                                        <field name="debit_note_new"
+                                               invisible="is_debit == False"
+                                               required="is_debit ==True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_res_debit_note_sync"
+                                                string="Sync"
+                                                invisible="is_debit == False or debit_note_new != 'odoo'"
+                                                help="Manually sync debit"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <span>Sale Order</span>
+                                    <td>
+                                        <field name="is_sale"/>
+                                    </td>
+                                    <td>
+                                        <field name="sale_order_new"
+                                               invisible="is_sale == False"
+                                               required="is_sale == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_sale_order"
+                                                string="Sync"
+                                                invisible="is_sale == False or sale_order_new != 'odoo'"
+                                                help="Manually sync sale order"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>Delivery Note</span>
+                                    <td>
+                                        <field name="is_delivery"/>
+                                    </td>
+                                    <td>
+                                        <field name="delivery_note_new"
+                                               invisible="is_delivery == False"
+                                               required="is_delivery == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_res_delivery_note_sync"
+                                                string="Sync"
+                                                invisible="is_delivery == False or delivery_note_new != 'odoo'"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>Sale Invoices</span>
+                                    <td>
+                                        <field name="invoices"/>
+                                    </td>
+                                    <td>
+                                        <field name="invoices_new"
+                                               invisible="invoices == False"
+                                               required="invoices == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_invoices_sync"
+                                                string="Sync"
+                                                invisible="invoices == False or invoices_new != 'odoo'"
+                                                help="Manually sync Invoices"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <span>Credit Note</span>
+                                    <td>
+                                        <field name="is_credit"/>
+                                    </td>
+                                    <td>
+                                        <field name="credit_note_new"
+                                               invisible="is_credit == False"
+                                               required="is_credit == True"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_res_cridet_note_sync"
+                                                string="Sync"
+                                                invisible="is_credit ==False or credit_note_new != 'odoo'"/>
+                                        <!--                                        attrs="{'invisible':['|',('is_credit','=',False),('credit_note_new','!=','odoo')]}"-->
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+
+                                <tr style="padding-top: 2px; background-color: #F1F1F1;">
+                                    <th style='width:20%; font-weight:bold'>Payments</th>
+                                    <th style='width:20%; font-weight:bold;text-align: right;'></th>
+                                    <th style='width:25%; font-weight:bold;text-align: left;'></th>
+                                    <th style='width:25%; font-weight:bold'></th>
+                                </tr>
+                                <tr>
+                                    <span>Out Payment</span>
+                                    <td>
+                                        <field name="out_payments"/>
+                                    </td>
+                                    <td>
+                                        <field name="out_payments_new"
+                                               invisible="out_payments == False"
+                                               required="out_payments == True"/>
+                                        <!--                                          attrs="{'invisible':[('out_payments','=',False)],-->
+                                        <!--                                  'required':[('out_payments','=',True)]}"-->
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_out_payment_sync"
+                                                string="Sync"
+                                                invisible="out_payments == False or out_payments_new != 'odoo'"
+                                                help="Manually sync Product Category"/>
+                                        <!--                                            attrs="{'invisible':['|',('out_payments','=',False),('out_payments_new','!=','odoo')]}"-->
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>In Payment</span>
+                                    <td>
+                                        <field name="in_payments"/>
+                                    </td>
+                                    <td>
+                                        <field name="in_payments_new"
+                                               invisible="in_payments == False"
+                                               required="in_payments == True"/>
+                                        <!--                                         attrs="{'invisible':[('in_payments','=',False)],-->
+                                        <!--                                  'required':[('in_payments','=',True)]}"-->
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_in_payment_sync"
+                                                string="Sync"
+                                                invisible="in_payments ==False or in_payments_new != 'odoo'"
+                                                help="Manually sync Product Category"/>
+                                        <!--                                         attrs="{'invisible':['|',('in_payments','=',False),('in_payments_new','!=','odoo')]}"-->
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <span>Journals</span>
+                                    <td>
+                                        <field name="journals"/>
+                                    </td>
+                                    <td>
+                                        <field name="journals_new"
+                                               invisible="journals == False"
+                                               required="journals == True"/>
+                                        <!--                                            attrs="{'invisible':[('journals','=',False)],-->
+                                        <!--                                  'required':[('journals','=',True)]}"-->
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                                type="object"
+                                                name="button_journal_entries"
+                                                string="Sync"
+                                                invisible="journals == False or journals_new != 'odoo'"
+                                                help="Manually sync Product Category"/>
+                                        <!--                                         attrs="{'invisible':['|',('journals','=',False),('journals_new','!=','odoo')]}"-->
+                                    </td>
+                                    <td style="text-align: center;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </page>
+                        <page string="Partner Account Mapping">
+                            <group string="partner">
+                                <field name="property_recieveable" context="{'default_company_id': company_id}"/>
+                                <field name="property_payable" context="{'default_company_id': company_id}"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- list View -->
+    <record id="ppts_tally_integration_list" model="ir.ui.view">
+        <field name="name">ppts.tally.integration.lists</field>
+        <field name="model">ppts.tally.integration</field>
+        <field name="arch" type="xml">
+            <list string="Tally list">
+                <field name="created_by"/>
+                <field name="created_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="tally_integration_action" model="ir.actions.act_window">
+        <field name="name">Tally to odoo Settings</field>
+        <field name="res_model">ppts.tally.integration</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="ppts_tally_integration_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tally Integration
+            </p>
+            <p>
+                Tally Integration with Odoo 17 powered.
+            </p>
+        </field>
+    </record>
+
+    <menuitem name="Tally Integration"
+              id="menu_ppts_tally"
+              sequence="44"
+              web_icon="ppts_tally_integration,static/description/icon.png"
+              action="ppts_tally_integration.tally_integration_action"
+              groups="ppts_tally_integration.group_manager"/>
+
+</odoo>
+

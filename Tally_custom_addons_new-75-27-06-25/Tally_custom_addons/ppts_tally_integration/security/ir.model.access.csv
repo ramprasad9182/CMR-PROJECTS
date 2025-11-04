@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+ppts_tally_dbconf_manager,db conf  manager,model_mysqldb_config,base.group_user,1,1,1,1
+access_ppts_tally_integration,ppts tally integration,model_ppts_tally_integration,base.group_user,1,1,1,1
+access_api_access_token,access_api_access_token,model_api_access_token,,1,1,1,1

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_picking_tally" model="ir.ui.view">
+        <field name="name">stock.picking.form.ppts.tally</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='note']" position="after">
+                <page string="Tally Details" groups="ppts_tally_integration.group_user">
+                    <group>
+                        <group string="Tally-Odoo">
+                            <field name="tally_receipt_no" readonly="1"/>
+                            <field name="tally_receipt_name" readonly="1"/>
+                        </group>
+                        <group string="Odoo - Tally" groups="ppts_tally_integration.group_manager">
+                            <field name="ndw_select" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_location_tally" model="ir.ui.view">
+        <field name="name">stock.location.form.ppts.tally</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group" position="after">
+                <group groups="ppts_tally_integration.group_user">
+                    <group string="Tally - Odoo">
+                        <field name="tally_id" readonly="1"/>
+                    </group>
+                    <group groups="ppts_tally_integration.group_manager">
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ppts_tally_integration_log,ppts tally integration Log,model_ppts_tally_integration_log,base.group_user,1,1,1,0
+access_sync_master_data_log,sync master data log,model_sync_master_data_log,base.group_user,1,1,1,0
+access_tally_entries,tally_entries,model_tally_entries,base.group_user,1,1,1,0
+access_odoo_entries,odoo_entries,model_odoo_entries,base.group_user,1,1,1,0
