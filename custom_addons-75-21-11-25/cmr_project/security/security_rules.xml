@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Define your custom group -->
+    <record id="group_custom_project_access" model="res.groups">
+        <field name="name">Custom Project Access</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <!-- Apply the group to the Project main menu -->
+    <record id="project.menu_project_management_all_tasks" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('cmr_project.group_custom_project_access')])]"/>
+    </record>
+</odoo>

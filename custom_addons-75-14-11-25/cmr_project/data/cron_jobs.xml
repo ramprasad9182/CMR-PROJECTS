@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="ir_cron_cmr_project_purchase_order" model="ir.cron">
+            <field name="name">Payment Term Notification for Purchase Order's</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="state">code</field>
+            <field name="code">model.notify_due_payment_terms()</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now() + relativedelta(days=1)).strftime('%Y-%m-%d 10:00:00')"/>
+        </record>
+
+
+        <record id="project.act_project_project_2_project_task_all" model="ir.actions.act_window">
+            <field name="name">Tasks</field>
+            <field name="domain">
+                [('project_id', '=', active_id),
+                ('display_in_project', '=', True),
+                ('user_ids', 'in', [uid])]
+            </field>
+        </record>
+
+    </data>
+</odoo>

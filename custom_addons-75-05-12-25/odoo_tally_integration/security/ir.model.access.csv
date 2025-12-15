@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_state_master,odoo_state_master.state_company_master,model_state_master,,1,1,1,1

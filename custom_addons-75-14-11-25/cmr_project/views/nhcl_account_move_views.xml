@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="nhcl_view_invoice_tree_view" model="ir.ui.view">
+        <field name="name">Account Move</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="project_name"
+                       column_invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund', 'in_receipt')"
+                       widget="many2many_tags"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_partner_display_name']" position="after">
+                <field name="cmr_product_id"
+                       column_invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund', 'in_receipt')"/>
+                <field name="po_ref_number"
+                       column_invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund', 'in_receipt')"/>
+                <field name="po_date"
+                       column_invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund', 'in_receipt')"/>
+                <field name="po_amount"
+                       column_invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund', 'in_receipt')"
+                       sum="Total"/>
+                <field name="paid_amount"
+                       column_invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund', 'in_receipt')"
+                       sum="Total"/>
+                <field name="payment_due"
+                       column_invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund', 'in_receipt')"
+                       sum="Total"/>
+            </xpath>
+        </field>
+    </record>
+
+<!--   <record id="nhcl_view_invoice_form_view" model="ir.ui.view">-->
+<!--        <field name="name">Account Move Form - Custom View</field>-->
+<!--        <field name="model">account.move</field>-->
+<!--        <field name="inherit_id" ref="account.view_move_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//form/sheet" position="inside">-->
+<!--                <field name="inv_ref"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+
+    <record id="nhcl_view_account_payment_tree_view" model="ir.ui.view">
+        <field name="name">Nhcl Account Payment</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_bank_id']" position="after">
+                <field name="nhcl_purchase_id" invisible="0"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="nhcl_view_account_payment_term_view" model="ir.ui.view">
+        <field name="name">Nhcl Account Payment Term</field>
+        <field name="model">account.payment.term</field>
+        <field name="inherit_id" ref="account.view_payment_term_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group/group[2]" position="after">
+                <group>
+                    <field name="nhcl_payment_term_ids" nolabel="1" colspan="2">
+                        <list editable="bottom">
+                            <field name="percentage"/>
+                            <field name="type"/>
+                            <field name="days"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!--    Adding the field 'transfer_reference' to the model account.analytic.line-->
+    <record id="view_account_analytic_line_form" model="ir.ui.view">
+        <field name="name">
+            account.analytic.line.view.form.inherit.analytic.account.on.stock.picking
+        </field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id"
+               ref="analytic.view_account_analytic_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="transfer_reference"/>
+            </xpath>
+        </field>
+    </record>
+
+
+
+</odoo>
