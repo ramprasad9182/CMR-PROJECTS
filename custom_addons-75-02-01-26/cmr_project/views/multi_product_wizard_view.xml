@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_multi_product_wizard" model="ir.ui.view">
+        <field name="name">nhcl.multi.product.wizard.form</field>
+        <field name="model">nhcl.multi.product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Add Multiple Products">
+                <group>
+                    <field name="product_ids" widget="many2many_tags"  options="{'no_open': True,'no_create': True,'no_edit':True}"/>
+                </group>
+                <footer>
+                    <button name="action_add_products" type="object" string="Add" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+
+     <!-- WIZARD 1 FORM -->
+    <record id="view_project_product_select_wizard" model="ir.ui.view">
+        <field name="name">project.product.select.wizard.form</field>
+        <field name="model">project.product.select.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Select Product Templates">
+                <group>
+                    <field name="product_name_id" widget="many2many_tags"/>
+                    <field name="available_attribute_value_ids" invisible="1"/>
+                    <field name="attribute_value_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button string="Next" type="object" name="select_attribute_product_ids" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- WIZARD 2 FORM -->
+    <record id="view_project_product_variant_wizard" model="ir.ui.view">
+        <field name="name">project.product.variant.wizard.form</field>
+        <field name="model">project.product.variant.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Select Product Variants">
+                <group>
+                    <field name="available_product_ids" widget="many2many_tags" readonly="1" invisible="1"/>
+                    <field name="product_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button string="Add Products" type="object" name="action_add_products" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+</odoo>

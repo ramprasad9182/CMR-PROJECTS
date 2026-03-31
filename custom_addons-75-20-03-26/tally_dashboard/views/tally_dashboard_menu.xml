@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="action_tally_dashboard_menu" model="ir.actions.client">
+        <field name="name">Tally Dashboard</field>
+        <field name="tag">tally_dashboard_actions</field>
+    </record>
+
+    <menuitem id="menu_tally_dashboard_main"
+              name="Tally Dashboard"
+              action="action_tally_dashboard_menu"
+              parent="integration_admin_panel.menu_tally_integration_root"
+              sequence="20"
+              />
+</odoo>

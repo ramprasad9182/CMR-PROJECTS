@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_nhcl_account_payment_term,nhcl.account.payment.term,model_nhcl_account_payment_term,,1,1,1,1
+access_nhcl_project_product,nhcl.project.product,model_nhcl_project_product,,1,1,1,1
+access_product_movement_report,product.movement.report,model_product_movement_report,,1,1,1,1
+access_product_movement_report_line,product.movement.report.line,model_product_movement_report_line,,1,1,1,1
+
+access_multi_product_wizard,access_multi_product_wizard,model_nhcl_multi_product_wizard,,1,1,1,1
+access_project_product_select_wizard,access_project_product_select_wizard,model_project_product_select_wizard,,1,1,1,1
+access_project_product_variant_wizard,access_project_product_variant_wizard,model_project_product_variant_wizard,,1,1,1,1

@@ -1,0 +1,33 @@
+<odoo>
+    <data>
+<!--        <record id="seq_contact_sequence" model="ir.sequence">-->
+<!--            <field name="name">Contact Sequence</field>-->
+<!--            <field name="code">res.partner.contact</field>-->
+<!--            <field name="prefix">CNT</field>-->
+<!--            <field name="padding">3</field>-->
+<!--            <field name="number_increment">1</field>-->
+<!--        </record>-->
+        <record id="seq_contact_customer" model="ir.sequence">
+            <field name="name">Contact Sequence- Customer</field>
+            <field name="code">res.partner.customer</field>
+            <field name="prefix">C</field>
+            <field name="padding">7</field>
+            <field name="number_increment">1</field>
+        </record>
+        <record id="seq_contact_vendor" model="ir.sequence">
+            <field name="name">Contact Sequence-vendor</field>
+            <field name="code">res.partner.supplier</field>
+            <field name="prefix">V</field>
+            <field name="padding">7</field>
+            <field name="number_increment">1</field>
+        </record>
+        <record id="seq_contact_others" model="ir.sequence">
+            <field name="name">Contact Sequence-Others</field>
+            <field name="code">res.partner.others</field>
+            <field name="prefix">T</field>
+            <field name="padding">7</field>
+            <field name="number_increment">1</field>
+        </record>
+    </data>
+</odoo>
+

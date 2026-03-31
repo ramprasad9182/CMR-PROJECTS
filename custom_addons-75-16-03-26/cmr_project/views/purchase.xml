@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="cmr_project_purchase_order" model="ir.ui.view">
+        <field name="name">purchase.order.view.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Address Details">
+                    <group>
+                        <!-- Address block -->
+                        <group string="Address">
+                            <div class="o_address_format">
+                                <field name="project_street" placeholder="Street..."/>
+                                <field name="project_street2" placeholder="Street 2..."/>
+                                <div class="o_row">
+                                    <field name="project_city" placeholder="City" class="o_col-4"/>
+                                    <field name="project_zip" placeholder="ZIP" class="o_col-4"/>
+                                    <field name="project_state_id" placeholder="State" class="o_col-4"/>
+                                </div>
+                                <field name="project_country_id" placeholder="Country"/>
+                            </div>
+                        </group>
+
+                        <!-- GST & PAN block -->
+                        <group string="GST &amp; PAN">
+                            <field name="project_l10n_in_gst_treatment" readonly="0"/>
+                            <field name="project_l10n_in_gstin"/>
+                            <field name="project_pan"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+            <xpath expr="//field[@name='project_id']" position="attributes">
+                <attribute name="domain">[('stage_id.name', '!=', 'Canceled')]</attribute>
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page[@name='purchase_delivery_invoice']/group/group/field[@name='payment_term_id']"
+                   position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <!--        #######################################################################-->
+                <field name="street" readonly="1"/>
+                <field name="street2" readonly="1"/>
+                <field name="city" readonly="1"/>
+                <field name="state_id" readonly="1"/>
+                <field name="zip" readonly="1"/>
+                <field name="country_id" readonly="1"/>
+                <!--        ###########################################################################-->
+                <field name="nhcl_account_id" readonly="state not in ['draft','sent'] "
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                <field name="nhcl_purchase_type" readonly="state not in ['draft','sent']"
+                       domain="[('project_ids.account_id','=', nhcl_account_id)]"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                <field name="nhcl_type" required="1"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_id']"
+                   position="before">
+                <field name="s_no"/>
+                <field name="nhcl_task_id"
+                       domain="[('project_id.account_id','=', parent.nhcl_account_id),('stage_id','=', parent.nhcl_purchase_type),('parent_id','=', False)]"
+                       readonly="parent.state not in ['draft','sent']"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                <field name="nhcl_sub_task_id" domain="[('parent_id','=', nhcl_task_id)]"
+                       readonly="parent.state not in ['draft','sent']"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                <field name="nhcl_account_line_id" column_invisible="1" readonly="parent.state not in ['draft','sent']"
+                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                <field name="nhcl_dummy_product_id" options="{'no_edit': True, 'no_create': True, 'no_open': True}"
+                       widget="many2many_tags" column_invisible="1"/>
+                <!--                <field name="nhcl_type" column_invisible="1"/>-->
+            </xpath>
+            <!--            <xpath expr="//field[@name='order_line']/form//field[@name='product_uom']" position="attributes">-->
+            <!--                <attribute name="domain">[('category_id', '=', product_id.uom_id.category_id)]</attribute>-->
+            <!--            </xpath>-->
+            <xpath expr="//notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_id']"
+                   position="attributes">
+                <attribute name="options">{'no_edit': True, 'no_create': True, 'no_open': True}</attribute>
+                <attribute name="domain">(parent.nhcl_type == 'civil' and (nhcl_task_id or nhcl_sub_task_id)) and [('id','in',nhcl_dummy_product_id)] or []</attribute>
+<!--                <attribute name="domain">-->
+<!--                    [('id', 'in', nhcl_dummy_product_id)] if parent.nhcl_type != 'interior' else []-->
+<!--                </attribute>-->
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_qty']" position="after">
+                <!--                <field name="purchase_many" widget="many2many_tags"/>-->
+                <field name="purchase_project_ids" widget="many2many_tags" optional="hide"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!--    <record id="cmr_project_approval_product_line_view_tree_product_domain" model="ir.ui.view">-->
+    <!--        <field name="name">approval.product.line.view.tree.domain</field>-->
+    <!--        <field name="model">approval.product.line</field>-->
+    <!--        <field name="inherit_id" ref="approvals.approval_product_line_view_tree"/>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <xpath expr="//field[@name='quantity']" position="after">-->
+    <!--                <field name="estimate_value" />-->
+    <!--            </xpath>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <!-- Tree View -->
+    <record id="view_purchase_order_line_tree_all" model="ir.ui.view">
+        <field name="name">purchase.order.line.tree.all</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <field name="order_id" string="PO No" widget="many2one"/>
+                <field name="po_date_order" string="PO Date"/>
+                <field name="partner_id" string="Vendor"/>
+                <field name="product_id" string="Product"/>
+                <field name="analytic_distribution" widget="analytic_distribution" string="Project"/>
+
+                <field name="product_qty" string="Total PO Qty" sum="PO Qty"/>
+                <field name="po_untaxed" sum="Total PO Value"/>
+                <field name="qty_received" string="Total GRC Qty" sum="Total GRC Qty"/>
+                <field name="grc_value" sum="Total GRC Value"/>
+                <field name="billed_qty" sum="Total Bill QTY"/>
+                <field name="bill_value" sum="Total Bill Value"/>
+                <field name="pending_po_qty" sum="Pending PO Qty"/>
+                <field name="pending_po_value" sum="Pending PO Value"/>
+                <field name="pending_grc_qty" sum="Pending GRC Qty"/>
+                <field name="pending_grc_value" sum="Pending GRC Value"/>
+
+                <!--                <field name="product_qty" string="PO Qty" sum="Total PO Qty"/>-->
+                <!--                <field name="unit_price_qty" string="PO Value" sum="Total PO Value"/>-->
+                <!--                <field name="currency_id" column_invisible="1"/>-->
+                <!--                <field name="qty_received" string="GRC Qty" sum="Total GRC Qty"/>-->
+                <!--                <field name="receive_bill_price_subtotal" sum="Total GRC Value"/>-->
+                <!--&lt;!&ndash;                <field name="qty_invoiced" string="Bill Qty" sum="Total Bill Qty"/>&ndash;&gt;-->
+                <!--                <field name="bill_qty_posted" string="Bill Qty" sum="Total Bill Qty"/>-->
+                <!--                <field name="bill_price_subtotal"  sum="Total Bill Value"/>-->
+                <!--                <field name="pending_po_qty" string="Pending PO Qty" sum="Total Pending PO Qty"/>-->
+                <!--                <field name="pending_po_value" string="Pending PO Value" sum="Total Pending PO Value"/>-->
+                <!--                <field name="pending_grc_qty" string="Pending GRC Qty" sum="Total Pending GRC Qty"/>-->
+                <!--                <field name="pending_grc_value" string="Pending GRC Value" sum="Total Pending GRC Value"/>-->
+                <field name="state"/>
+                <field name="po_payment_status" string="Payment Status"/>
+                <!--                <field name="purchase_many" widget="many2many_tags" column_invisible="0"/>-->
+                <field name="purchase_project_ids" widget="many2many_tags" column_invisible="0" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_order_line_search_purchase_many_groupby" model="ir.ui.view">
+        <field name="name">purchase.order.line.search.purchase.many.group</field>
+        <field name="model">purchase.order.line</field>
+        <field name="inherit_id" ref="purchase.purchase_order_line_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='order_reference']" position="after">
+                <!--                <filter name="groupby_purchase_many"-->
+                <!--                        string="Projectttttt" domain="[]"-->
+                <!--                        context="{'group_by': 'purchase_many'}"/>-->
+                <filter name="groupby_purchase_project_ids"
+                        string="Project" domain="[]"
+                        context="{'group_by': 'purchase_project_ids'}"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Action to Open PO Lines -->
+    <record id="action_purchase_order_line_all" model="ir.actions.act_window">
+        <field name="name">PO Vs GRC Vs BILL</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_purchase_order_line_tree_all"/>
+        <field name="domain">[('order_id.state', 'in', ['done'])]</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_purchase_order_line_all"
+              name="PO Vs GRC Vs BILL"
+              parent="purchase.purchase_report_main"
+              sequence="99"
+              groups="purchase.group_purchase_manager"
+              action="action_purchase_order_line_all"/>
+
+
+    <record id="nhcl_purchase_order_search_inherit" model="ir.ui.view">
+        <field name="name">nhcl.purchase.order.list.select.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="nhcl_task_ids"/>
+                <field name="nhcl_sub_task_ids"/>
+            </xpath>
+            <xpath expr="//group" position="inside">
+                <filter string="Task" name="group_by_task"
+                        context="{'group_by': 'nhcl_task_ids'}"/>
+                <filter string="Sub Task" name="group_by_sub_task"
+                        context="{'group_by': 'nhcl_sub_task_ids'}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+</odoo>

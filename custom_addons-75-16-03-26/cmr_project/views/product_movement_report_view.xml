@@ -1,0 +1,131 @@
+<!-- views/product_movement_report_view.xml -->
+<odoo>
+    <!-- Form View -->
+    <record id="view_product_movement_report_form" model="ir.ui.view">
+        <field name="name">product.movement.report.form</field>
+        <field name="model">product.movement.report</field>
+        <field name="arch" type="xml">
+
+            <form string="Product Movement Report" create="false">
+                <sheet>
+                     <div class="oe_button_box" name="button_box">
+                              <button name="action_open_lines"
+                                type="object"
+                                string="View Lines"
+                                class="btn-secondary"/>
+                     </div>
+<!--                    <h1>-->
+<!--                        <field name="name" readonly="1"/>-->
+<!--                    </h1>-->
+                    <group>
+                        <field name="from_date"/>
+                        <field name="to_date"/>
+                        <button name="action_fetch_products"
+                                type="object"
+                                string="Fetch Products"
+                                class="btn-primary"/>
+
+                    </group>
+
+                    <notebook>
+                        <page string="Products">
+                            <field name="line_ids">
+                                <list editable="bottom" create="false" delete="false">
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="opening_balance"/>
+                                    <field name="received_qty"/>
+                                    <field name="delivered_qty"/>
+                                    <field name="closing_balance"/>
+                                     <field name="project_id"/>
+<!--                                    <field name="vendor_return_qty"/>-->
+<!--                                    <field name="customer_return_qty"/>-->
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_product_movement_report_list" model="ir.ui.view">
+        <field name="name">product.movement.report.list</field>
+        <field name="model">product.movement.report</field>
+        <field name="arch" type="xml">
+            <list string="Product Movement Reports" create="false">
+<!--                <field name="name"/>-->
+                <field name="from_date"/>
+                <field name="to_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Report Line Tree (with product visible) -->
+    <record id="view_product_movement_report_line_tree" model="ir.ui.view">
+        <field name="name">product.movement.report.line.tree</field>
+        <field name="model">product.movement.report.line</field>
+        <field name="arch" type="xml">
+            <list string="Product Movement Lines" create="false">
+                <field name="product_id"/>
+                <field name="report_id"/>
+                <field name="opening_balance"/>
+                <field name="received_qty"/>
+                <field name="delivered_qty"/>
+                <field name="closing_balance"/>
+                <field name="project_id"/>
+                <button name="action_view_stock_moves"
+                    string="View Records"
+                    type="object"
+                    icon="fa-eye"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search view for groupby -->
+    <record id="view_product_movement_report_line_search" model="ir.ui.view">
+        <field name="name">product.movement.report.line.search</field>
+        <field name="model">product.movement.report.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Group by Product" name="group_product"
+                        context="{'group_by':'product_id'}"/>
+                <filter string="Project" name="group_project" context="{'group_by': 'project_id'}"/>
+                <field name="product_id"/>
+                <field name="report_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_stock_move_tree_custom" model="ir.ui.view">
+        <field name="name">stock.move.tree.custom</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <list string="Stock Moves" create="false">
+                <field name="picking_id" string="Reference" widget="many2one"/>
+                <field name="origin"/>
+                 <field name="date" string="Date"/>
+                <field name="product_id" string="Product"/>
+                <field name="product_uom_qty" string="Quantity"/>
+                <field name="product_uom"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_product_movement_report" model="ir.actions.act_window">
+        <field name="name">Product Movement Report</field>
+        <field name="res_model">product.movement.report</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_product_movement_report_root"
+              name="Product Movement Report"
+              parent="stock.menu_warehouse_report"
+              action="action_product_movement_report"
+              sequence="1000"
+    />
+</odoo>

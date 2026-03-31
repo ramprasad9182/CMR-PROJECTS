@@ -1,0 +1,73 @@
+<odoo>
+    <record id="view_product_tree_inherit_analytic_distributions" model="ir.ui.view">
+        <field name="name">product.tree.inherit.analytic.distributions</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="stock.product_product_stock_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='incoming_qty']" position="before">
+                <field name="x_receipt_analytic_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_product_overview_search_inherit" model="ir.ui.view">
+        <field name="name">product.product.search.inherit.analytic.groupby</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="stock.product_search_form_view_stock_report"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="filter_analytic"
+                        string="Receipt Analytic Project"
+                        domain="[('analytic_tags', '!=', '')]"/>
+            </xpath>
+            <xpath expr="//search/group" position="inside">
+                <filter name="group_by_analytic_tags"
+                        string="Receipt Analytic Project"
+                        context="{'group_by': 'analytic_tags'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_template_tree_inherit_uom" model="ir.ui.view">
+        <field name="name">product.template.tree.inherit.uom</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='uom_id']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_product_template_form_inherit_uom" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.uom</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="uom_id" groups="uom.group_uom"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_product_variant_tree_inherit_uom" model="ir.ui.view">
+        <field name="name">product.product.tree.inherit.uom</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='uom_id']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_product_variant_form_inherit_uom" model="ir.ui.view">
+        <field name="name">product.product.form.inherit.uom</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="uom_id" groups="uom.group_uom"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
